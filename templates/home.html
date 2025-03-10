@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TrackYourVoteTO</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <script id="replace_with_navbar" src="{{ url_for('static', filename='nav.js') }}"></script>
+    <h1>
+        Welcome!
+    </h1>
+
+    <p>Latest City Council News:</p>
+    <div id="news"></div>
+
+    {# table of contents #}
+    <p>Check out:</p>
+    <ul id="navigation">
+        {% for href, caption in [('motions-2022-2026', '2022-2026 Motions'), ('councillors', '2022-2026 Elected Officials Contacts'), ('about', 'About')] %}
+            <li><a href="{{ href }}">{{ caption }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <p>Or, select an elected official:</p>
+    <ol start="0" class="cols">
+        {% for i in range(0,26) %}
+            <li><a href="/motions-2022-2026/{{i}}">{{ off_list[i] }}</a></li>
+        {% endfor %}
+    </ol>
+    <script src="{{ url_for('static', filename='home.js') }}"></script>
+</body>
+</html>

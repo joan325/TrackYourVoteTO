@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>2022-2026 Officials</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/flatpickr.min.css">
+</head>
+<body>
+    <script id="replace_with_navbar" src="{{ url_for('static', filename='nav.js') }}"></script>
+    <h1>2022-2026 Elected Officials</h1>
+
+    <p>Find your councillor <a href="https://www.toronto.ca/city-government/council/members-of-council/" target="_blank">here</a> or search:</p>
+
+    <input type="text" id="searchQuery">
+
+    <table id="table">
+        <tr>
+            {% for col in column_names %}
+            <th>{{col}}</th>
+            {% endfor %}
+        </tr>
+        {% for row in row_data %}
+        {% set row_id = row[1] | string %}
+        {% if row_id == "None" %}
+            {% set row_id = "0" %}
+        {% endif %}
+        <tr id="{{row_id}}">
+            {% for col, row_ in zip(column_names, row) %}
+
+                {% if col == "Full name" %}
+                    <td class="fullName">{{row_}}</td>
+                
+                {% elif col == "Personal website" or col == "Website" %}
+                    {% if row_ == "None" %}
+                    <td>{{row_}}</td>
+                    {% else %}
+                    <td><a href="{{row_}}" target="_blank">{{row_}}</a></td>
+
+                    {% endif %}
+                
+                {% elif col == "Email" %}
+                    {% set email_link = "mailto:" + row_ %}
+                    <td><a href="{{email_link}}" target="_blank">{{row_}}</a></td>
+                
+                {% elif col == "Photo" %}
+                    <td><img src="{{row_}}"></td>
+
+                {% else %}
+                    <td>{{row_}}</td>
+
+                {% endif %}
+
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    
+    </table>
+
+    <script type="module" src="{{ url_for('static', filename='councillors.js') }}"></script>
+    <script src="/static/flatpickr.min.js"></script>
+</body>
+</html>

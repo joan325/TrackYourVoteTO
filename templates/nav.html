@@ -1,0 +1,25 @@
+<header>
+  <nav class="top_nav">
+    <div class="home">
+      <a href="/"><img src="/static/images/logo.svg" alt="Home" id="logo" /></a>
+    </div>
+    <a href="/" class="page">Home</a>
+    <a href="/about" class="page">About</a>
+    <a href="/councillors" class="page">Councillors</a>
+    <a href="/committees" class="page">By Committee</a>
+    <a href="/motions-2022-2026" class="page">City Council Motions</a>
+
+    <div class="page end">
+      <div class="nav-left">
+        <div>
+          <p>My Official: {{session.get("my_official", "None")}}</p>
+        </div>
+        <div>
+          <a href="/councillors">(change?)</a>
+          <a href="" id="remove-official">(remove?)</a>
+        </div>
+      </div>
+      <img class="profile nav-right" src="{{session.get('my_photo', '/static/images/Default.png')}}"/>
+    </div>
+  </nav>
+</header>

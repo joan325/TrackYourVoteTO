@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Motions</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='/images/favicon.svg') }}"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link rel="stylesheet" href="/static/flatpickr.min.css" />
+    <link
+      rel="stylesheet"
+      href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en"
+    />
+    <style>
+      img.staff-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin-right: 20px;
+      }
+      .vert-flex {
+        display: flex;
+        flex-direction: column;
+      }
+      .vert-flex a {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <script
+      id="replace_with_navbar"
+      src="{{ url_for('static', filename='nav.js') }}"
+    ></script>
+    <div class="content">
+      {% if name != "" %}
+      <h1>Voting Record for {{name}}, 2022-2026 Motions</h1>
+      <div class="flex">
+        <div class="vert-flex">
+          <img
+          src="{{info[9]}}"
+          class="staff-photo"
+          onerror="this.onerror=null; this.src='/static/images/Default.png'"
+          />
+          <a id="set-official" class="{{name}}" href="">
+            Set as your official
+          </a>
+        </div>
+        
+        <div class="flex_text info_box">
+          {% if info[1] == "None" %}
+          <p>Mayor of Toronto</p>
+          {% else %}
+          <p>Councillor for Ward {{info[1]}}, {{info[2]}}</p>
+          {% endif %}
+          {% set email_link = "mailto:" + info[4] %}
+          <p>
+            Email:&nbsp;<a href="{{email_link}}" target="_blank">{{info[4]}}</a>
+          </p>
+          <a href="{{info[5]}}" target="_blank">Page at toronto.ca</a>
+          <p>Phone number: {{info[6]}}</p>
+          <p>Office: {{info[7]}}</p>
+          {% if info[8] != "None" %}
+          <p>
+            Personal website:&nbsp;<a href="{{info[8]}}" target="_blank"
+              >{{info[8]}}</a
+            >
+          </p>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <h1>2022-2026 Motions</h1>
+      {% endif %}
+
+      <p>View motions by:</p>
+
+      <input type="checkbox" id="bySearchQuery" name="bySearchQuery" />
+      <label for="bySearchQuery">Search query</label>
+      <br />
+
+      <input type="text" id="searchQuery" />
+
+      <br />
+
+      <input type="checkbox" id="byDate" name="byDate" />
+      <label for="byDate">Date range</label>
+      <br />
+
+      <input type="text" id="calendar" />
+
+      <table id="table">
+        <tr>
+          {% for col in column_names %}
+          <th>{{col}}</th>
+          {% endfor %}
+        </tr>
+        {% for row in row_data %}
+        {% set this_id = row[3][5:(5+id|length)] %}
+        {% if id not in id_list or id==this_id %}
+        <tr>
+          {% for col, row_ in zip(column_names, row) %} {% if col == "Vote" %}
+          {% if row_ == "Yes" %}
+          <td class="green">{{row_}}</td>
+          {% elif row_ == "No" %}
+          <td class="red">{{row_}}</td>
+          {% else %}
+          <td class="grey">{{row_}}</td>
+
+          {% endif %} {% elif col == "Result" %} {% if "Carried" in row_ %}
+          <td class="green">{{row_}}</td>
+          {% elif "Lost" in row_ %}
+          <td class="red">{{row_}}</td>
+          {% else %}
+          <td class="grey">{{row_}}</td>
+
+          {% endif %} {% elif col == "Agenda Item #" %} {% set agenda_link =
+          "https://secure.toronto.ca/council/agenda-item.do?item=" + row_ %}
+          <td><a href="{{agenda_link}}" target="_blank">{{row_}}</a></td>
+
+          {% else %}
+          <td>{{row_}}</td>
+
+          {% endif %} {% endfor %}
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+    </div>
+
+    <script
+      type="module"
+      src="{{ url_for('static', filename='motions.js') }}"
+    ></script>
+    <script src="/static/flatpickr.min.js"></script>
+  </body>
+</html>

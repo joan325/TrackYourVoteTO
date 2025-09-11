@@ -1,0 +1,21 @@
+{
+  "name": "trackyourvoteto",
+  "version": "1.0.0",
+  "main": "app.py",
+  "scripts": {
+    "test": "run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "TrackYourVoteTO"
+  },
+  "keywords": [
+    "vote"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "beautifulsoup4": "^0.0.1-security"
+  }
+}

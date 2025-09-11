@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TrackYourVoteTO</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='images/favicon.svg') }}"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <style>
+      #official-highlights-votes {
+        display: flex;
+      }
+      .vote-item {
+        min-width: min(120px, 20%);
+        width: fit-content;
+        padding-inline: 15px;
+        padding-block: 10px;
+        margin: 5px;
+        /* border: black 2px solid; */
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background-color: rgb(243, 243, 243);
+      }
+      .vote-item h3 {
+        text-align: center;
+        margin: 3px;
+        margin-bottom: 7px;
+        font-size: 1em;
+      }
+      .vote-item p {
+        padding: 5px;
+        margin: 5px;
+        border-radius: 10px;
+        margin-inline: auto;
+        width: fit-content;
+      }
+      .vote-item a {
+        overflow-wrap: break-word;
+        text-decoration: none;
+      }
+      .vote-item .article-link {
+        padding: 5px;
+        background-color: white;
+        border-radius: 10px;
+        margin-block: 7px;
+        display: block;
+      }
+      .vote-item .article-link a {
+        color: rgb(71, 71, 71);
+      }
+      .vote-item img.favicon {
+        margin: 2px 1px 0px 2px !important;
+        width: 16px;
+        height: 16px;
+      }
+      #committee-highlights {
+        width: min(800px, 100%);
+        padding-inline: 10px;
+
+      }
+      .highlights-flex-container {
+        display: flex;
+      }
+      a#see-more-btn {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <script
+      id="replace_with_navbar"
+      src="{{ url_for('static', filename='nav.js') }}"
+    ></script>
+    <div class="content">
+      <h1>Welcome!</h1>
+
+      {% if session.get("my_official") != "None" and session.get("my_official") != None %}
+      <div class="news-container">
+        <h2>Highlights from {{session.get("my_official")}}</h2>
+        <div class="highlights-flex-container">
+          <div id="official-highlights-votes" data-name="{{ session.get('my_official', 'None') }}" data-motions='{{ news_dict | tojson }}'>></div>
+          {% if committee_items %}
+          <div id="committee-highlights">
+            <h3>Committees</h3>
+            <ul id="committee-expand">
+              {% for item in committee_items %}
+                {% if loop.index <= 5 %}
+                  {% if item[1] == "" %}
+                    <li>{{ item[0] }}</li>
+                  {% else %}
+                    <li><a href="{{ item[1] }}">{{ item[0] }}</a></li>
+                  {% endif %}
+                {% else %}
+                  {% if item[1] == "" %}
+                    <li class="hidden-committee">{{ item[0] }}</li>
+                  {% else %}
+                    <li class="hidden-committee"><a href="{{ item[1] }}">{{ item[0] }}</a></li>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            </ul>
+
+            {% if committee_items|length > 5 %}
+              <a id="see-more-btn" onclick="toggleCommittees()">See more</a>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+        
+        <div id="official-highlights"></div>
+      </div>
+      {% endif %}
+
+      <div class="news-container">
+        <h2>Latest City Council News:</h2>
+        <div id="news"></div>
+      </div>
+
+      {# table of contents #}
+      <p>Check out:</p>
+      <ul id="navigation">
+        {% for href, caption in [('motions-2022-2026', '2022-2026 Motions'),
+        ('councillors', '2022-2026 Elected Officials Contacts')] %}
+        <li><a href="{{ href }}">{{ caption }}</a></li>
+        {% endfor %}
+      </ul>
+
+      <p>Or, select an elected official:</p>
+      <ol start="0" class="cols">
+        {% for i in range(0,26) %}
+        <li><a href="/councillors/{{i}}">{{ off_list[i] }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+    <script src="{{ url_for('static', filename='home.js') }}"></script>
+  </body>
+</html>

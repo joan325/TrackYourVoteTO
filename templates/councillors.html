@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>2022-2026 Officials</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='images/favicon.svg') }}"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link rel="stylesheet" href="/static/flatpickr.min.css" />
+    <style>
+      img.table-image {
+        width: 75px;
+        height: 75px;
+      }
+
+      .contact .contact-item {
+        margin-bottom: 10px;
+        margin-top: 0;
+        padding: 5px;
+        background-color: #236192;
+        color: white;
+        border-radius: 4px;
+        width: fit-content;
+      }
+
+      .voting-history-link  {
+        display: inline-block;
+        background-color: #236192;
+        color: white;
+        border-radius: 4px;
+        padding: 5px;
+        text-align: center;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <script
+      id="replace_with_navbar"
+      src="{{ url_for('static', filename='nav.js') }}"
+    ></script>
+    <div class="content">
+      <h1>2022-2026 Elected Officials</h1>
+
+      <p>
+        Find your councillor
+        <a
+          href="https://www.toronto.ca/city-government/council/members-of-council/"
+          target="_blank"
+          >here</a
+        >
+        or search:
+      </p>
+
+      <input type="text" id="searchQuery" />
+
+      <table id="table">
+        <tr>
+          {% for col in ["Name", "District", "Contact", "Office", "Personal
+          website", "", ""] %}
+          <th>{{col}}</th>
+          {% endfor %}
+        </tr>
+
+        {% for row in row_data %} {% set row_id = row["District #"] | string %}
+        {% if row_id == "None" %} {% set row_id = "0" %} {% endif %}
+        <tr id="{{row['Full name']}}">
+          <td>
+            {{row["Full name"]}}, {{row["Primary role"]}}
+            <a class="small-link set-official" href="/">
+              Set as your official
+            </a>
+          </td>
+
+          <td>
+            {{row["District name"]}}{% if row["District #"] != "None" %}, Ward
+            {{row["District #"]}} {% endif %}
+          </td>
+
+          <td class="contact">
+            {% if row["Email"] and row["Email"] != "None" %}
+            <div>
+              <a href="mailto:{{row['Email']}}" class="contact-item"
+                >{{row['Email']}}</a
+              >
+            </div>
+            {% endif %} {% if row["Phone"] and row["Phone"] != "None" %}
+            <div>
+              <p class="contact-item" style="margin-top: 10px">
+                {{row["Phone"]}}
+              </p>
+            </div>
+            {% endif %} {% set website = row.get("Website") %} {% if website and
+            website != "None" %}
+            <div>
+              <a href="{{website}}" target="_blank" class="contact-item"
+                >Page at toronto.ca</a
+              >
+            </div>
+            {% endif %}
+          </td>
+          
+          {% if row["Office"] and row["Office"] != "None" %} 
+          <td>
+            {{row["Office"]}}
+          </td>
+          {% endif %}
+
+          <td>
+            {% if row["Personal website"] and row["Personal website"] != "None" %}
+            <a href="{{row['Personal website']}}">{{row["Personal website"]}}</a>
+            {% endif %}
+          </td>
+
+          <td>
+            <a class="voting-history-link" href="/councillors/{{row_id}}">
+              View voting history
+            </a>
+          </td>
+
+          <td>
+            <img
+              src="{{row['Photo']}}"
+              class="table-image"
+              onerror="this.onerror=null; this.src='/static/images/Default.png'"
+            />
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <script
+      type="module"
+      src="{{ url_for('static', filename='councillors.js') }}"
+    ></script>
+    <script src="/static/flatpickr.min.js"></script>
+  </body>
+</html>

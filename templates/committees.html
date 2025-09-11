@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TrackYourVoteTO</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='images/favicon.svg') }}"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <style>
+      /* Style the buttons that are used to open and close the accordion panel */
+      .accordion {
+        background-color: #eee;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        transition: 0.4s;
+      }
+
+      button.accordion {
+        padding-top: 21px;
+      }
+
+      /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+      .active,
+      .accordion:hover {
+        background-color: #ccc;
+      }
+
+      /* Style the accordion panel. Note: hidden by default */
+      .panel {
+        padding: 0 18px;
+        background-color: white;
+        display: none;
+        overflow: hidden;
+      }
+
+      .accordion:after {
+        content: "+";
+        font-size: 13px;
+        color: #777;
+        float: right;
+        margin-left: 5px;
+        font-size: 1.5em;
+        margin-top: 0px;
+      }
+
+      .active:after {
+        content: "-";
+      }
+    </style>
+  </head>
+  <body>
+    <script
+      id="replace_with_navbar"
+      src="{{ url_for('static', filename='nav.js') }}"
+    ></script>
+    <div class="content">
+      <h1>Committees</h1>
+
+      <p>Search for a committee:</p>
+      <input type="text" id="searchQuery" />
+
+      <br /><br />
+
+      <button class="accordion">Results</button>
+      <div class="panel">
+        <ul id="all-committees" class="cols">
+          {% for name, code, cat, num in data %}
+          <li><a href="/committees/{{code}}">{{ name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <p>By issue:</p>
+      {% for i in range(1, issues|length+1) %}
+      <button class="accordion">{{issues[i-1]}}</button>
+      <div class="panel">
+        <ul class="cols">
+          {% for name, code, cat, num in data %}
+          {% if num == i|string %}
+          <li><a href="/committees/{{code}}">{{ name }}</a></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+
+      <p>By category:</p>
+      <button class="accordion">Toronto City Council</button>
+      <div class="panel">
+        <ul class="cols">
+          {% for name, code, cat, num in data %}
+          {% if cat == "Toronto City Council" %}
+          <li><a href="/committees/{{code}}">{{ name }}</a></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+
+      <button class="accordion">Community Council</button>
+      <div class="panel">
+        <ul class="cols">
+          {% for name, code, cat, num in data %}
+          {% if cat == "Community Council" %}
+          <li><a href="/committees/{{code}}">{{ name }}</a></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+
+      <button class="accordion">Committees Reporting to City Council</button>
+      <div class="panel">
+        <ul class="cols">
+          {% for name, code, cat, num in data %}
+          {% if cat == "Committees Reporting to City Council" %}
+          <li><a href="/committees/{{code}}">{{ name }}</a></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+
+      <button class="accordion">Other Boards and Committees</button>
+      <div class="panel">
+        <ul class="cols">
+          {% for name, code, cat, num in data %}
+          {% if cat == "Other Boards and Committees" %}
+          <li><a href="/committees/{{code}}">{{ name }}</a></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='committees.js') }}"></script>
+  </body>
+</html>

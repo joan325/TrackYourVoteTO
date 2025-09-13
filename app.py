@@ -136,6 +136,7 @@ with open(csv_file, newline="", encoding="utf-8") as f:
         title = row[0]
         id = row[1]
         title_to_link[title] = "/committees/" + id
+        committee_ids.append(id)
 
 def getCommittees(url):
     html = requests.get(url).text

@@ -45,7 +45,7 @@ def fetch_api_data():
 
 def load_data(file_name):
     try:
-        return json.load(open(file_name, "r"))
+        return json.load(open(file_name, "r", encoding="utf-8"))
     except (FileNotFoundError, json.JSONDecodeError):
         return {"message": "No data available"}
 
@@ -57,32 +57,35 @@ def get_data():
 def get_vote_highlights():
     return jsonify(load_data('in_the_news.json'))
 
-
-scheduler = BackgroundScheduler()
-scheduler.add_job(fetch_api_data, "interval", days=1)
-scheduler.start()
-
-app.secret_key = os.getenv("SECRET_KEY")
+app.secret_key = "sdfsgsgdfhdhdghghsdsrlgehalriuw40ousdjkf"
 
 if __name__ == '__main__':
     fetch_api_data()
     app.run(debug=True)
 
-## accessing voting record (motions)
+## accessing motions list
 base_url = "https://ckan0.cf.opendata.inter.prod-toronto.ca/api/3/action/datastore_search"
 resource_id = "55ead013-2331-4686-9895-9e8145b94189"
-limit = 99000
+limit = 32000  # CKAN max rows per call
 
-url = f"{base_url}?resource_id={resource_id}&limit={limit}"
-data = urlopen(url)
-assert data.code == 200
+all_records = []
+offset = 0
 
-response_dict = json.loads(data.read())
-assert response_dict['success'] is True
-result = response_dict['result']
+while True:
+    url = f"{base_url}?resource_id={resource_id}&limit={limit}&offset={offset}"
+    data = urlopen(url)
+    response_dict = json.loads(data.read())
+    assert response_dict['success'] is True
+
+    records = response_dict['result']['records']
+    if not records:
+        break
+
+    all_records.extend(records)
+    offset += limit
 
 pd.set_option('display.max_columns', None)
-vr = pd.json_normalize(result["records"]) # full voting record for 2022-26
+vr = pd.json_normalize(all_records)  # full voting record for 2022-26
 
 # organizing: names and date
 vr["Date & Time"] = pd.to_datetime(vr["Date/Time"].str[:16], format="mixed", yearfirst=True)
@@ -90,13 +93,12 @@ vr["Full name"] = vr["First Name"] + " " + vr["Last Name"]
 vr = vr[["Full name", "Agenda Item Title", "Date & Time", "Vote", "Result", "Agenda Item #", "Motion Type", "Vote Description"]]
 vr = vr.iloc[::-1]
 
-
 # filter for motion list
 motions_all = vr[["Agenda Item Title", "Result", "Date & Time", "Agenda Item #", "Motion Type", "Vote Description"]].drop_duplicates()
 
 ## accessing elected officials info
 resource_id = "16d6b1b3-b474-47f4-8c09-8bf5b3aa0e68"
-limit = 99000
+limit = 990000
 
 url = f"{base_url}?resource_id={resource_id}&limit={limit}"
 data = urlopen(url)
@@ -181,7 +183,7 @@ def home():
         for _, row in motions_filtered.iterrows()
     }
 
-    return render_template("home.html", off_list=officials_list, news_dict=motions_dict, committee_items=committees_by_person[this_id])
+    return render_template("home.html", off_list=officials_list, news_dict=motions_dict, committee_items=committees_by_person[this_id], this_id=this_id)
 
 @app.route("/about")
 def about():

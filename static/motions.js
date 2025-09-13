@@ -1,12 +1,5 @@
 let rowVisibility = [];
 
-/*
-let num = 1;
-if ({{ name }} != "") {
-    num = 2;
-}
-*/
-
 function showAllRows() {
   const table = document.getElementById("table");
   const tr = table.getElementsByTagName("tr");

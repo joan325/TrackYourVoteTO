@@ -27,7 +27,6 @@
         padding-inline: 15px;
         padding-block: 10px;
         margin: 5px;
-        /* border: black 2px solid; */
         border-radius: 10px;
         margin-bottom: 10px;
         background-color: rgb(243, 243, 243);
@@ -86,7 +85,12 @@
     <div class="content">
       <h1>Welcome!</h1>
 
-      {% if session.get("my_official") != "None" and session.get("my_official") != None %}
+      {% if session.get("my_official") == "None" or session.get("my_official") == None %}
+      <p>Get started by <a href="/councillors"><strong>selecting your official</strong></a>.</p>
+      <p>Explore <a href="/motions-2022-2026"><strong>city council motions</strong></a> directly and from the headlines.</p>
+      <br>
+      {% else %}
+      <p>Explore all the votes from {{session.get("my_official")}} <a href="/councillors/{{this_id}}">here</a>.</p>
       <div class="news-container">
         <h2>Highlights from {{session.get("my_official")}}</h2>
         <div class="highlights-flex-container">
@@ -126,6 +130,7 @@
       <div class="news-container">
         <h2>Latest City Council News:</h2>
         <div id="news"></div>
+        <p style="font-size: 12px; font-style: italic; margin-block: 4px;">Last updated 2 minutes ago.</p>
       </div>
 
       {# table of contents #}

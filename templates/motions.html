@@ -110,7 +110,20 @@
         {% set this_id = row[3][5:(5+id|length)] %}
         {% if id not in id_list or id==this_id %}
         <tr>
-          {% for col, row_ in zip(column_names, row) %} {% if col == "Vote" %}
+          {% for col, row_ in zip(column_names, row) %}
+          {% if col == "Agenda Item Title" %}
+          <td>
+            {{row_}}
+            {% if "on " in row_|lower %}
+            <div style="margin-top: 5px;">
+              <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: #e4e4e4; color: #236192; border-radius: 12px; font-size: 11px; font-weight: 500;">
+                <img src="https://serpapi.com/searches/68b5b5d1bf04d5ce5701bc38/images/f4e64f2396de0f3577782b6367094c2e93683ee71ddc62d9.png" style="width: 12px; height: 12px; display: inline;">
+                <span>Related article</span>
+              </div>
+            </div>
+            {% endif %}
+          </td>
+          {% elif col == "Vote" %}
           {% if row_ == "Yes" %}
           <td class="green">{{row_}}</td>
           {% elif row_ == "No" %}
